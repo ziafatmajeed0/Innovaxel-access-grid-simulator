@@ -95,6 +95,7 @@ http://localhost:5000
 
 ```
 ├── app.py              # Main Flask application
+├── data.py             # Data management functions
 ├── requirements.txt    # Python dependencies
 ├── templates/
 │   └── index.html     # Frontend interface
