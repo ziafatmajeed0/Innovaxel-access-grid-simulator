@@ -144,5 +144,46 @@ def get_rooms():
     """API endpoint to get room rules"""
     return jsonify(ROOM_RULES)
 
+@app.route('/api/simulate-single', methods=['POST'])
+def simulate_single():
+    """API endpoint to simulate access for a single employee"""
+    try:
+        data = request.get_json()
+        employee = data.get('employee')
+        
+        if not employee:
+            return jsonify({
+                'success': False,
+                'error': 'Employee data is required'
+            }), 400
+        
+        # Reset access history for single simulation
+        global access_history
+        access_history = []
+        
+        granted, reason = check_access_permission(employee, ROOM_RULES)
+        
+        result = {
+            'employee_id': employee['id'],
+            'room': employee['room'],
+            'request_time': employee['request_time'],
+            'access_level': employee['access_level'],
+            'status': 'Granted' if granted else 'Denied',
+            'reason': reason
+        }
+        
+        return jsonify({
+            'success': True,
+            'result': result
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
 if __name__ == '__main__':
+    print("🚀 Starting Access Grid Simulator...")
+    print("📍 Server running at: http://localhost:5000")
+    print("🔒 Ready to simulate employee access control!")
     app.run(debug=True, port=5000)
